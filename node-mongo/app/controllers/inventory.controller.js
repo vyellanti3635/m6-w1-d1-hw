@@ -60,7 +60,7 @@ exports.inventories = (req, res) => {
 };
 
 exports.deleteInventory = (req, res) => {
-	Inventory.findByIdAndRemove(req.params.id)
+	Inventory.findByIdAndDelete(req.params.id)
 		.select('-__v -_id')
 		.then((inventory) => {
 			if (!inventory) {
@@ -89,13 +89,13 @@ exports.updateInventory = (req, res) => {
 			price: req.body.price,
 			status: req.body.status,
 		},
-		{ new: false },
+		{ returnDocument: 'before' },
 	)
 		.select('-__v')
 		.then((inventory) => {
 			if (!inventory) {
 				return res.status(404).send({
-					message: "Error -> Can't update an inventory with id = " + req.params.id,
+					message: "Error -> Can't update an inventory with id = " + req.body._id,
 					error: 'Not Found!',
 				});
 			}
@@ -104,7 +104,7 @@ exports.updateInventory = (req, res) => {
 		})
 		.catch((err) => {
 			return res.status(500).send({
-				message: "Error -> Can't update a inventory with id = " + req.params.id,
+				message: "Error -> Can't update a inventory with id = " + req.body._id,
 				error: err.message,
 			});
 		});
